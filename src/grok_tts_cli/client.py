@@ -2,7 +2,7 @@
 
 import asyncio
 import os
-from typing import AsyncIterator
+from collections.abc import AsyncIterator
 
 import httpx
 
@@ -94,12 +94,12 @@ class GrokTTSClient:
 
             except httpx.TimeoutException:
                 if attempt == self.MAX_RETRIES - 1:
-                    raise GrokTTSError("Request timed out after retries")
+                    raise GrokTTSError("Request timed out after retries") from None
                 await asyncio.sleep(self.RETRY_DELAY * (attempt + 1))
 
             except httpx.NetworkError as e:
                 if attempt == self.MAX_RETRIES - 1:
-                    raise GrokTTSError(f"Network error: {e}")
+                    raise GrokTTSError(f"Network error: {e}") from None
                 await asyncio.sleep(self.RETRY_DELAY * (attempt + 1))
 
         raise GrokTTSError("Max retries exceeded")
